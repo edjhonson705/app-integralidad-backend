@@ -7,6 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([ParticipacionDeporte])],
   controllers: [ParticipacionDeporteController],
-  providers: [ParticipacionDeporteService],
+  providers: [ParticipacionDeporteService], 
 })
 export class ParticipacionDeporteModule { }
