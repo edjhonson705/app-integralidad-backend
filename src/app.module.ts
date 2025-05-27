@@ -3,6 +3,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EstudianteModule } from './estudiante/estudiante.module';
 import { Estudiante } from './estudiante/entities/estudiante.entity';
+import { ParticipacionCulturaModule } from './participacion_cultura/participacion_cultura.module';
+import { ParticipacionCultura } from './participacion_cultura/entities/participacion_cultura.entity';
+import { ParticipacionDeporteModule } from './participacion_deporte/participacion_deporte.module';
 
 @Module({
   imports: [
@@ -12,13 +15,15 @@ import { Estudiante } from './estudiante/entities/estudiante.entity';
       port: 5432,
       password: 'qw',
       username: 'postgres',
-      entities: [Estudiante],
+      entities: [Estudiante, ParticipacionCultura],
       database: 'app-integralidad-v1',
       synchronize: true,
       logging: true,
     }),
-   // EstudiantesModule,
+    // EstudiantesModule,
     EstudianteModule,
+    ParticipacionCulturaModule,
+    ParticipacionDeporteModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

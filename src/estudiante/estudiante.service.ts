@@ -68,24 +68,7 @@ export class EstudianteService {
    * @returns 
    */
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
-    /*
-      const estudiante: Estudiante = new Estudiante();
-  
-      estudiante.anno_academico = updateEstudianteDto.anno_academico || '';
-      estudiante.grupo = updateEstudianteDto.grupo || '';
-      estudiante.primer_nombre = updateEstudianteDto.primer_nombre || '';
-      estudiante.segundo_nombre = updateEstudianteDto.segundo_nombre || '';
-      estudiante.primer_apellido = updateEstudianteDto.primer_apellido || '';
-      estudiante.segundo_apellido = updateEstudianteDto.segundo_apellido || '';
-      estudiante.situacion_escolar = updateEstudianteDto.situacion_escolar || '';
-      estudiante.via_ingreso = updateEstudianteDto.via_ingreso || '';
-      estudiante.observaciones = updateEstudianteDto.observaciones || ''; 
-      estudiante.sexo = updateEstudianteDto.sexo || '';
-      estudiante.id = id;
-   
-      return this.userRepository.save(estudiante);*/
-
-
+    
     const estudiante = await this.userRepository.preload({
       id,
       ...updateEstudianteDto,
