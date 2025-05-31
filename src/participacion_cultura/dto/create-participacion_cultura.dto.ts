@@ -1,8 +1,7 @@
 import {
-    IsEnum,
+    IsDateString,    
     IsNotEmpty,
-    IsString,
-    MinLength,
+    IsString,    
 } from 'class-validator';
 
 export class CreateParticipacionCulturaDto {
@@ -18,4 +17,12 @@ export class CreateParticipacionCulturaDto {
     @IsString()
     @IsNotEmpty()
     resultado: string;
+
+    @IsDateString()
+    @IsNotEmpty()
+    fecha: Date;
+
+    @IsString()
+    @IsNotEmpty()
+    curso: string;
 }

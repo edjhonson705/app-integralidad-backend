@@ -29,6 +29,8 @@ export class ParticipacionCulturaService {
     participacionCultura.nombre_numero_cultural = createParticipacionCulturaDto.nombre_numero_cultural;
     participacionCultura.categoria_cultural = createParticipacionCulturaDto.categoria_cultural;
     participacionCultura.resultado = createParticipacionCulturaDto.resultado;
+    participacionCultura.fecha = createParticipacionCulturaDto.fecha;
+    participacionCultura.curso = createParticipacionCulturaDto.curso;
 
     return this.userRepository.save(participacionCultura);
   }

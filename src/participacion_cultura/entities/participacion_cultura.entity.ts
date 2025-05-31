@@ -13,6 +13,12 @@ export class ParticipacionCultura {
   categoria_cultural: string;
 
   @Column({ type: 'varchar', length: 100 })
-  resultado: string; 
+  resultado: string;
+
+  @Column({ type: 'date'})
+  fecha: Date;
+
+  @Column({ type: 'varchar', length: 9 })
+  curso: string;
 
 }
