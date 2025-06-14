@@ -1,11 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { ParticipacionCultura } from '../../participacion_cultura/entities/participacion_cultura.entity';
+import { ParticipacionDeporte } from '../../participacion_deporte/entities/participacion_deporte.entity';
+
 
 @Entity()
 export class Estudiante {
-  
-   /**
-   * this decorator will help to auto generate id for the table.
-   */
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -37,10 +36,19 @@ export class Estudiante {
   observaciones: string;
 
   @Column({ type: 'enum', enum: ['m', 'f', 'u'] })
-  /**
-   * m - male
-   * f - female
-   * u - unspecified
-   */
   sexo: string;
+
+  //Cultura
+  @ManyToMany(() => ParticipacionCultura, participacion => participacion.estudiantes, {
+    cascade: true,
+  })
+  @JoinTable()
+  participacionesCulturales: ParticipacionCultura[];
+
+  //Deportes
+  @ManyToMany(() => ParticipacionDeporte, participacion => participacion.estudiantes, {
+    cascade: true,
+  })
+  @JoinTable()
+  participacionesDeportivas: ParticipacionDeporte[];
 }

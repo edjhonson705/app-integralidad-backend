@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Estudiante } from '../../estudiante/entities/estudiante.entity';
 
 @Entity()
 /**
@@ -23,4 +24,7 @@ export class ParticipacionDeporte {
 
   @Column({ type: 'varchar', length: 9 })
   curso: string;
+
+  @ManyToMany(() => Estudiante, estudiante => estudiante.participacionesDeportivas)
+  estudiantes: Estudiante[];
 }
