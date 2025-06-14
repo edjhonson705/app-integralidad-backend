@@ -5,17 +5,154 @@ import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Estudiante } from './entities/estudiante.entity';
+import { ParticipacionCultura } from 'src/participacion_cultura/entities/participacion_cultura.entity';
+import { ParticipacionDeporte } from 'src/participacion_deporte/entities/participacion_deporte.entity';
 
 @Injectable()
 export class EstudianteService {
 
   /**
    * Constructor
-   * @param userRepository 
+   * @param estudianteRepository 
    */
   constructor(
-    @InjectRepository(Estudiante) private readonly userRepository: Repository<Estudiante>,
+    @InjectRepository(Estudiante) private readonly estudianteRepository: Repository<Estudiante>,
+    @InjectRepository(ParticipacionCultura) private readonly participacionesCulturalesRepository: Repository<ParticipacionCultura>,
+    @InjectRepository(ParticipacionDeporte) private readonly participacionesDeportivasRepository: Repository<ParticipacionDeporte>,
+
   ) { }
+
+  /**
+   * asignarParticipacionesCulturales
+   * @param estudianteId 
+   * @param participacionIds 
+   * @returns 
+   */
+  async asignarParticipacionesCulturales(estudianteId: number, participacionIds: number[]) {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesCulturales'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    const participaciones = await this.participacionesCulturalesRepository.findByIds(participacionIds);
+    estudiante.participacionesCulturales = [...estudiante.participacionesCulturales, ...participaciones];
+
+    return this.estudianteRepository.save(estudiante);
+  }
+
+  /**
+   * asignarParticipacionesDeportivas
+   * @param estudianteId 
+   * @param participacionIds 
+   * @returns 
+   */
+  async asignarParticipacionesDeportivas(estudianteId: number, participacionIds: number[]) {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesDeportivas'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    const participaciones = await this.participacionesDeportivasRepository.findByIds(participacionIds);
+    estudiante.participacionesDeportivas = [...estudiante.participacionesDeportivas, ...participaciones];
+
+    return this.estudianteRepository.save(estudiante);
+  }
+
+  /**
+   * eliminarParticipacionCultural TODO: Hacer el controlador
+   * @param estudianteId 
+   * @param participacionId 
+   * @returns 
+   */
+  async eliminarParticipacionCultural(estudianteId: number, participacionId: number) {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesCulturales'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    estudiante.participacionesCulturales = estudiante.participacionesCulturales.filter(
+      p => p.id !== participacionId,
+    );
+
+    return this.estudianteRepository.save(estudiante);
+  }
+
+  /**
+   * eliminarParticipacionDeportiva
+   * @param estudianteId 
+   * @param participacionId 
+   * @returns 
+   */
+  async eliminarParticipacionDeportiva(estudianteId: number, participacionId: number) {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesDeportivas'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    estudiante.participacionesDeportivas = estudiante.participacionesDeportivas.filter(
+      p => p.id !== participacionId,
+    );
+
+    return this.estudianteRepository.save(estudiante);
+  }
+
+  /**
+   * obtenerParticipacionesCulturales
+   * @param estudianteId 
+   * @returns 
+   */
+  async obtenerParticipacionesCulturales(estudianteId: number): Promise<ParticipacionCultura[]> {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesCulturales'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    return estudiante.participacionesCulturales;
+  }
+
+  /**
+  * obtenerParticipacionesDeportivas
+  * @param estudianteId 
+  * @returns 
+  */
+  async obtenerParticipacionesDeportivas(estudianteId: number): Promise<ParticipacionDeporte[]> {
+
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id: estudianteId },
+      relations: ['participacionesDeportivas'],
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+
+    return estudiante.participacionesDeportivas;
+  }
 
   /**
    * 
@@ -37,7 +174,7 @@ export class EstudianteService {
     estudiante.observaciones = createEstudianteDto.observaciones;
     estudiante.sexo = createEstudianteDto.sexo;
 
-    return this.userRepository.save(estudiante);
+    return this.estudianteRepository.save(estudiante);
   }
 
   /**
@@ -45,7 +182,7 @@ export class EstudianteService {
    * @returns 
    */
   findAll(): Promise<Estudiante[]> {
-    return this.userRepository.find({
+    return this.estudianteRepository.find({
       order: {
         id: 'ASC', // Orden ascendente
       },
@@ -58,7 +195,7 @@ export class EstudianteService {
    * @returns 
    */
   findOne(id: number): Promise<Estudiante | null> {
-    return this.userRepository.findOneBy({ id });
+    return this.estudianteRepository.findOneBy({ id });
   }
 
   /**
@@ -68,8 +205,8 @@ export class EstudianteService {
    * @returns 
    */
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
-    
-    const estudiante = await this.userRepository.preload({
+
+    const estudiante = await this.estudianteRepository.preload({
       id,
       ...updateEstudianteDto,
     });
@@ -78,7 +215,7 @@ export class EstudianteService {
       throw new NotFoundException(`Estudiante con ID ${id} no encontrado`);
     }
 
-    return this.userRepository.save(estudiante);
+    return this.estudianteRepository.save(estudiante);
 
   }
 
@@ -88,6 +225,6 @@ export class EstudianteService {
    * @returns 
    */
   remove(id: number): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+    return this.estudianteRepository.delete(id);
   }
 }
