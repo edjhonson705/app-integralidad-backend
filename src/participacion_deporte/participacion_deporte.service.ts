@@ -28,6 +28,8 @@ export class ParticipacionDeporteService {
     participacionDeporte.nombre_numero_deportivo = createParticipacionDeporteDto.nombre_numero_deportivo;
     participacionDeporte.categoria_deportiva = createParticipacionDeporteDto.categoria_deportiva;
     participacionDeporte.resultado = createParticipacionDeporteDto.resultado;
+    participacionDeporte.fecha = createParticipacionDeporteDto.fecha;
+    participacionDeporte.curso = createParticipacionDeporteDto.curso;
 
     return this.userRepository.save(participacionDeporte);
   }
